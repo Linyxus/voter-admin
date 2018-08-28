@@ -2,19 +2,34 @@ import React, { Component } from 'react';
 import MyAppBar from './components/MyAppBar';
 import { CssBaseline } from '@material-ui/core';
 import Root from './containers/Root';
-import AuthOnStartup from './components/AuthOnStartup';
+import { connect } from 'react-redux';
+import constants from './constants';
+import AuthView from './containers/AuthView';
+import { loginAsSuperuser } from './action';
 
 class App extends Component {
   render() {
     return (
       <React.Fragment>
         <CssBaseline />
-        <AuthOnStartup />
-        <MyAppBar 
-          content={<Root />}/>
+        { this.props.auth.status === constants.AUTH.AUTHED ? (
+          <MyAppBar 
+            content={<Root />}/>
+        ) : (
+          <AuthView login={this.props.login} authStatus={this.props.auth.status}/>
+        )
+        }
       </React.Fragment>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: (username, password) => dispatch(loginAsSuperuser(username, password)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
