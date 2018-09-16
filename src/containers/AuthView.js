@@ -10,7 +10,7 @@ import constants from '../constants';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Grid } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = {
   root: {
     flexGrow: 1,
   },
@@ -18,7 +18,7 @@ const styles = theme => ({
     marginTop: 50,
     marginBottom: 50,
   }
-});
+};
 
 const TabContainer = ({ children, dir }) => {
   return children;

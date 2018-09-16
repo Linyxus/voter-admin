@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import constants from '../constants';
+import ValidationView from './ValidationView';
 
 const Root = (props) => {
   if (props.page === constants.PAGE.OVERVIEW) {
-    return <div></div>;
+    return <div>This page is under construction.</div>;
   }
   if (props.page === constants.PAGE.VALIDATION) {
-    return <div></div>;
+    return <div><ValidationView /></div>;
   }
 };
 
