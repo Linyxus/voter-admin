@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button, CircularProgress } from '@material-ui/core';
 import Switch from '@material-ui/core/Switch';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,13 +11,25 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import constants from '../constants';
+import CheckIcon from '@material-ui/icons/Check';
 
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
-    maxWidth: 600
+    maxWidth: 600,
+    marginBottom: 10,
+  },
+  loading: {
+    marginBottom: 10,
+    height: 300,
+    width: "100%",
+    maxWidth: 600,
+  },
+  paper: {
+    height: "100%"
   },
   grow: {
     flexGrow: 1
@@ -28,7 +40,42 @@ const styles = theme => ({
 });
 
 const PollCard = (props) => {
-  const { classes, theme } = props;
+  const { classes, theme, status } = props;
+
+  if (status === constants.POLL.FETCHING || status === constants.POLL.VALIDATING) {
+    return (
+      <div className={classes.loading}>
+      <Paper className={classes.paper}>
+      <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
+        <Grid item>
+          <CircularProgress/>
+        </Grid>
+        <Grid item>
+          <Typography variant="caption">{status === constants.POLL.FETCHING ? 
+                                          'Loading...' : 'Submitting...'}</Typography>
+        </Grid>
+      </Grid>
+      </Paper>
+      </div>
+    );
+  }
+
+  if (status === constants.POLL.FINISHED) {
+    return (
+      <div className={classes.loading}>
+      <Paper className={classes.paper}>
+      <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
+        <Grid item>
+          <CheckIcon color="secondary" />
+        </Grid>
+        <Grid item>
+          <Typography variant="caption">Validated</Typography>
+        </Grid>
+      </Grid>
+      </Paper>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -40,7 +87,7 @@ const PollCard = (props) => {
             </Typography>
           </Grid>
           <Grid item>
-            <Switch color="primary"/>
+            <Switch color="primary" disabled={!(status === constants.POLL.NORMAL)}/>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="caption">
@@ -64,14 +111,14 @@ const PollCard = (props) => {
                 <Avatar alt="1" src="~/1.jpg"/>
                 <ListItemText primary="Option" secondary="by someone" />
                 <ListItemSecondaryAction>
-                  <Switch />
+                  <Switch disabled={!(status === constants.POLL.NORMAL)}/>
                 </ListItemSecondaryAction>
               </ListItem>
               <ListItem dense button>
                 <Avatar alt="1" src="~/1.jpg"/>
                 <ListItemText primary="Option" secondary="by someone" />
                 <ListItemSecondaryAction>
-                  <Switch />
+                  <Switch disabled={!(status === constants.POLL.NORMAL)}/>
                 </ListItemSecondaryAction>
               </ListItem>
             </List>
@@ -94,6 +141,7 @@ const PollCard = (props) => {
 
 PollCard.propTypes = {
   classes: PropTypes.object.isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles, {withTheme: true})(PollCard);

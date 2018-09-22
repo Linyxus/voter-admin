@@ -8,6 +8,7 @@ const POLL = {
   VALIDATING: 'poll/validating',
   FINISHED: 'poll/finished',
   NORMAL: 'poll/normal',
+  FETCHING: 'poll/fetching',
 }
 
 export default POLL;

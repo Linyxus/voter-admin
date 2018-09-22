@@ -15,12 +15,15 @@ const ValidationView = (props) => {
 
   return (
     <Grid container alignItems="center" justify="center" direction="column">
-      <PollCard />
+      <PollCard status={constants.POLL.NORMAL}/>
+      <PollCard status={constants.POLL.FETCHING}/>
+      <PollCard status={constants.POLL.VALIDATING}/>
+      <PollCard status={constants.POLL.FINISHED}/>
     </Grid>
   )
 }
 
-ValidationView.PropTypes = {
+ValidationView.propTypes = {
   // polls: Polls data
   // validatePoll: the function to validate a poll
 }
