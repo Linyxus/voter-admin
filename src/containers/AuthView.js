@@ -8,16 +8,16 @@ import SwipeableViews from 'react-swipeable-views';
 import Login from '../components/Login';
 import constants from '../constants';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 const styles = {
   root: {
     flexGrow: 1,
   },
-  progress: {
-    marginTop: 50,
-    marginBottom: 50,
-  }
+  paper: {
+    flexGrow: 1,
+    padding: 50
+  },
 };
 
 const TabContainer = ({ children, dir }) => {
@@ -43,9 +43,17 @@ class AuthView extends React.Component {
     if (this.props.authStatus === constants.AUTH.AUTHING 
         || this.props.authStatus === constants.AUTH.CHECKING) {
       return (
-        <Paper className={classes.root}>
-          <Grid container justify="center" alignItems="center">
-            <CircularProgress className={classes.progress} />
+        <Paper className={classes.paper}>
+          <Grid container direction="column" justify="center" alignItems="center">
+            <Grid item>
+              <CircularProgress />
+            </Grid>
+            <Grid item>
+              <Typography variant="caption">
+                {this.props.authStatus === constants.AUTH.AUTHING ? 
+                  'Logging in...' : 'Checking your identity...'}
+              </Typography>
+            </Grid>
           </Grid>
         </Paper>
       )

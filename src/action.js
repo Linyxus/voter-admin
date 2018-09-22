@@ -1,4 +1,5 @@
-import { http } from "./requests";
+import { http, authedGet } from "./requests";
+import { saveCreds, isExpired } from "./tools";
 
 export const SET_PAGE = 'SET_PAGE';
 export const setPage = (page) => ({
@@ -29,20 +30,26 @@ export const checkRequest = () => ({
   type: CHECK_REQUEST,
 });
 
-export const CHECK_FAIL = 'CHECK_FAIL';
-export const checkFail = (error) => ({
-  type: CHECK_FAIL,
-  error,
-});
-
 export const loginAsSuperuser = (username, password) => dispatch => {
   dispatch(authRequest(username));
   http.post('/auth/token/', {username, password})
     .then(
       resp => {
-        // Just for test.
-        // Check whether is superuser before it.
-        dispatch(authSucceed(username));
+        saveCreds(username, resp.data.refresh);
+        dispatch(checkRequest());
+        authedGet('/admin/is_superuser/')
+          .then(
+            resp => {
+              if (resp.data['is_superuser?']) {
+                dispatch(authSucceed(username));
+              } else {
+                dispatch(authFail('You are not superuser.'));
+              }
+            },
+            error => {
+              dispatch(authFail(error.response || error.request));
+            }
+          )
       },
       error => {
         dispatch(authFail(error.response || error.request));
