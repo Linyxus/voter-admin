@@ -9,6 +9,7 @@ const POLL = {
   FINISHED: 'poll/finished',
   NORMAL: 'poll/normal',
   FETCHING: 'poll/fetching',
+  INVALID: 'poll/invalid',
 }
 
 export default POLL;

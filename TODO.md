@@ -2,17 +2,15 @@
 
 ### Frontend
 
-- [ ] 完成Poll Card
+- [x] 完成Poll Card
 
 - [ ] 完成Redux代码
 
 ### Backend
 
-- [ ] Api
-      - [ ] Fetch Validation Polls
+- [x] Api
+      - [x] Fetch Validation Polls
 
-      - [ ] Validate Poll
+      - [x] Validate Poll
 
-      - [ ] Validate superuser
-
-
+      - [x] Validate superuser

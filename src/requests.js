@@ -13,7 +13,7 @@ export const authedGet = (url, config = {}) => {
     }
     if (isExpired(refresh)) {
       clearCreds();
-      reject('Your login has been expired.')
+      reject('Your login has been expired.');
     }
     // the refresh token is okay
     http.post('/auth/token/refresh/', {refresh: refresh})

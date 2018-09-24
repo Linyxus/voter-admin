@@ -1,5 +1,5 @@
 import { http, authedGet } from "./requests";
-import { saveCreds, isExpired } from "./tools";
+import { saveCreds, isExpired, clearCreds } from "./tools";
 
 export const SET_PAGE = 'SET_PAGE';
 export const setPage = (page) => ({
@@ -55,4 +55,44 @@ export const loginAsSuperuser = (username, password) => dispatch => {
         dispatch(authFail(error.response || error.request));
       }
     );
+}
+
+export const FETCH_LIST_REQUEST = 'FETCH_LIST_REQUEST';
+export const fetchListRequest = () => ({
+  type: FETCH_LIST_REQUEST,
+});
+
+export const FETCH_LIST_FAIL = 'FETCH_LIST_FAIL';
+export const fetchListFail = (error) => ({
+  type: FETCH_LIST_FAIL,
+  error,
+});
+
+export const FETCH_LIST_SUCCEED = 'FETCH_LIST_SUCCEED';
+export const fetchListSucceed = (polls) => ({
+  type: FETCH_LIST_SUCCEED,
+  polls,
+});
+
+export const fetchList = () => dispatch => {
+  dispatch(fetchListRequest());
+  authedGet('/admin/validation/polls/')
+    .then(
+      resp => {
+        dispatch(fetchListSucceed(resp.data.polls));
+      },
+      error => {
+        dispatch(fetchListFail(error.response || error.request));
+      }
+    );
+}
+
+export const LOG_OUT = 'LOG_OUT';
+export const logout = () => ({
+  type: LOG_OUT,
+});
+
+export const doLogout = () => dispatch => {
+  dispatch(logout());
+  clearCreds();
 }
