@@ -37,7 +37,7 @@ class ValidationView extends React.Component {
     return (
       <Grid container alignItems="center" justify="center" direction="column">
         {
-          pollsList.list.map(id => <PollCard key={id} status={constants.POLL.FETCHING}/>)
+          pollsList.list.map(idx => (<PollCard key={idx} poll={this.props.polls[idx]}/>))
         }
       </Grid>
     );
@@ -52,10 +52,12 @@ ValidationView.propTypes = {
     list: PropTypes.arrayOf(PropTypes.number).isRequired,
   }),
   fetchList: PropTypes.func.isRequired,
+  polls: PropTypes.object,
 }
 
 const mapStateToProps = state => ({
   pollsList: state.pollsList,
+  polls: state.polls,
 });
 
 const mapDispatchToProps = dispatch => ({

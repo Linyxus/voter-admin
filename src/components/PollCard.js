@@ -39,109 +39,126 @@ const styles = theme => ({
   }
 });
 
-const PollCard = (props) => {
-  const { classes, theme, status } = props;
-
-  if (status === constants.POLL.FETCHING || status === constants.POLL.VALIDATING) {
-    return (
-      <div className={classes.loading}>
-      <Paper className={classes.paper}>
-      <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
-        <Grid item>
-          <CircularProgress/>
-        </Grid>
-        <Grid item>
-          <Typography variant="caption">{status === constants.POLL.FETCHING ? 
-                                          'Loading...' : 'Submitting...'}</Typography>
-        </Grid>
-      </Grid>
-      </Paper>
-      </div>
-    );
+class PollCard extends React.Component
+{
+  componentDidMount() {
+    // TODO: if the poll is not valid, load the poll data from server
   }
 
-  if (status === constants.POLL.FINISHED) {
-    return (
-      <div className={classes.loading}>
-      <Paper className={classes.paper}>
-      <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
-        <Grid item>
-          <CheckIcon color="secondary" />
-        </Grid>
-        <Grid item>
-          <Typography variant="caption">Validated</Typography>
-        </Grid>
-      </Grid>
-      </Paper>
-      </div>
-    );
-  }
+  render() {
+    const { classes, theme, poll } = this.props;
+    // calculate the status
+    const status = poll === undefined ? constants.POLL.INVALID : poll.status;
 
-  return (
-    <div>
-      <Paper className={classes.root} elevation={1}>
-        <Grid container spacing={theme.spacing.unit}>
-          <Grid item className={classes.grow}>
-            <Typography variant="title">
-              The Title of The poll
-            </Typography>
+    if (status === constants.POLL.FETCHING || status === constants.POLL.INVALID || status === constants.POLL.VALIDATING) {
+      return (
+        <div className={classes.loading}>
+          <Paper className={classes.paper}>
+          <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
+            <Grid item>
+              <CircularProgress/>
+            </Grid>
+            <Grid item>
+              <Typography variant="caption">{status === constants.POLL.VALIDATING ? 
+                                          'Submitting...' : 'Loading...' }</Typography>
+            </Grid>
+          </Grid>
+          </Paper>
+        </div>
+      );
+    }
+
+    if (status === constants.POLL.FINISHED) {
+      return (
+        <div className={classes.loading}>
+        <Paper className={classes.paper}>
+        <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
+          <Grid item>
+            <CheckIcon color="secondary" />
           </Grid>
           <Grid item>
-            <Switch color="primary" disabled={!(status === constants.POLL.NORMAL)}/>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="caption">
-              New option | by nonozone
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography component="p">
-              Check or uncheck the switches to determine whether the whole poll of the single
-              option is valid. Click commit to apply the validation.
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="caption">
-              Options
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <List>
-              <ListItem dense button>
-                <Avatar alt="1" src="~/1.jpg"/>
-                <ListItemText primary="Option" secondary="by someone" />
-                <ListItemSecondaryAction>
-                  <Switch disabled={!(status === constants.POLL.NORMAL)}/>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <ListItem dense button>
-                <Avatar alt="1" src="~/1.jpg"/>
-                <ListItemText primary="Option" secondary="by someone" />
-                <ListItemSecondaryAction>
-                  <Switch disabled={!(status === constants.POLL.NORMAL)}/>
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
-          </Grid>
-          <Grid item xs={12}>
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              fullWidth
-            >
-              <CloudUploadIcon className={classes.icon}/>
-              Submit
-            </Button>
+            <Typography variant="caption">Validated</Typography>
           </Grid>
         </Grid>
-      </Paper>
-    </div>
-  );
+        </Paper>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <Paper className={classes.root} elevation={1}>
+          <Grid container spacing={theme.spacing.unit}>
+            <Grid item className={classes.grow}>
+              <Typography variant="title">
+                The Title of The poll
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Switch color="primary" disabled={!(status === constants.POLL.NORMAL)}/>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="caption">
+                New option | by nonozone
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography component="p">
+                Check or uncheck the switches to determine whether the whole poll of the single
+                option is valid. Click commit to apply the validation.
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="caption">
+                Options
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <List>
+                <ListItem dense button>
+                  <Avatar alt="1" src="~/1.jpg"/>
+                  <ListItemText primary="Option" secondary="by someone" />
+                  <ListItemSecondaryAction>
+                    <Switch disabled={!(status === constants.POLL.NORMAL)}/>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem dense button>
+                  <Avatar alt="1" src="~/1.jpg"/>
+                  <ListItemText primary="Option" secondary="by someone" />
+                  <ListItemSecondaryAction>
+                    <Switch disabled={!(status === constants.POLL.NORMAL)}/>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+            </Grid>
+            <Grid item xs={12}>
+              <Button 
+                variant="outlined" 
+                color="primary" 
+                fullWidth
+              >
+                <CloudUploadIcon className={classes.icon}/>
+                Submit
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </div>
+    );
+  }
 }
 
 PollCard.propTypes = {
   classes: PropTypes.object.isRequired,
-  status: PropTypes.string.isRequired,
+  poll: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    options: PropTypes.arrayOf(PropTypes.number).isRequired,
+    owner: PropTypes.string,
+    title: PropTypes.string,
+    votes: PropTypes.arrayOf(PropTypes.number),
+    created: PropTypes.string,
+    description: PropTypes.string,
+  }),
 };
 
 export default withStyles(styles, {withTheme: true})(PollCard);

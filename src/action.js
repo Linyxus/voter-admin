@@ -1,5 +1,5 @@
 import { http, authedGet } from "./requests";
-import { saveCreds, isExpired, clearCreds } from "./tools";
+import { saveCreds, clearCreds } from "./tools";
 
 export const SET_PAGE = 'SET_PAGE';
 export const setPage = (page) => ({
@@ -93,6 +93,6 @@ export const logout = () => ({
 });
 
 export const doLogout = () => dispatch => {
-  dispatch(logout());
   clearCreds();
+  dispatch(logout());
 }

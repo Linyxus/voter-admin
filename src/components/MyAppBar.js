@@ -141,7 +141,11 @@ class MyAppBar extends React.Component {
           }}
           open={this.state.open}
         >
-          <div className={classes.toolbar}></div>
+          <div className={classes.toolbar}>
+            <Typography variant="caption">
+              Voter Control Center v0.0.1
+            </Typography>
+          </div>
           <Divider />
           <List>
             <ListItem button onClick={() => this.props.setPage(CONST.PAGE.OVERVIEW)}>
