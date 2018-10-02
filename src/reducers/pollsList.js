@@ -8,7 +8,8 @@ const pollsList = (state = {status: constants.COMMON.INVALID, list: []}, action)
     case FETCH_LIST_FAIL:
       return Object.assign({}, state, {status: constants.COMMON.INVALID});
     case FETCH_LIST_SUCCEED:
-      return Object.assign({}, state, {status: constants.COMMON.NORMAL});
+      const list = action.polls.map(poll => poll.id);
+      return Object.assign({}, state, {status: constants.COMMON.NORMAL, list: list});
     default:
       return state;
   }

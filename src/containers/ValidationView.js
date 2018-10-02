@@ -5,27 +5,62 @@ import constants from '../constants';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import PollCard from '../components/PollCard';
+import { compose } from 'recompose';
+import { CircularProgress } from '@material-ui/core';
+import { fetchList } from '../action';
 
 const styles = {
 
 }
 
-const ValidationView = (props) => {
-  const { classes } = props;
+class ValidationView extends React.Component {
+  componentDidMount() {
+    const { pollsList } = this.props;
+    if (pollsList.status === constants.COMMON.INVALID) {
+      this.props.fetchList();
+    }
+  }
 
-  return (
-    <Grid container alignItems="center" justify="center" direction="column">
-      <PollCard status={constants.POLL.NORMAL}/>
-      <PollCard status={constants.POLL.FETCHING}/>
-      <PollCard status={constants.POLL.VALIDATING}/>
-      <PollCard status={constants.POLL.FINISHED}/>
-    </Grid>
-  )
+  render() {
+    const { classes, pollsList } = this.props;
+
+    if (pollsList.status === constants.COMMON.INVALID
+      || pollsList.status === constants.COMMON.FETCHING) {
+        return (
+          <Grid container alignItems="center" justify="center">
+            <CircularProgress />
+          </Grid>
+        )
+    }
+
+    // pollsList.status === NORMAL
+    return (
+      <Grid container alignItems="center" justify="center" direction="column">
+        {
+          pollsList.list.map(id => <PollCard key={id} status={constants.POLL.FETCHING}/>)
+        }
+      </Grid>
+    );
+  }
 }
 
 ValidationView.propTypes = {
   // polls: Polls data
   // validatePoll: the function to validate a poll
+  pollsList: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+    list: PropTypes.arrayOf(PropTypes.number).isRequired,
+  }),
+  fetchList: PropTypes.func.isRequired,
 }
 
-export default withStyles(styles)(ValidationView);
+const mapStateToProps = state => ({
+  pollsList: state.pollsList,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchList: () => dispatch(fetchList()),
+});
+
+export default compose(withStyles(styles), 
+                      connect(mapStateToProps, mapDispatchToProps))(ValidationView);
