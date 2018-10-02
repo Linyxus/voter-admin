@@ -43,6 +43,10 @@ class PollCard extends React.Component
 {
   componentDidMount() {
     // TODO: if the poll is not valid, load the poll data from server
+    const { poll } = this.props;
+    if (poll === undefined || poll.status === constants.POLL.INVALID) {
+      this.props.fetchPoll();
+    }
   }
 
   render() {
@@ -91,7 +95,7 @@ class PollCard extends React.Component
           <Grid container spacing={theme.spacing.unit}>
             <Grid item className={classes.grow}>
               <Typography variant="title">
-                The Title of The poll
+                {poll.title}
               </Typography>
             </Grid>
             <Grid item>
@@ -99,7 +103,7 @@ class PollCard extends React.Component
             </Grid>
             <Grid item xs={12}>
               <Typography variant="caption">
-                New option | by nonozone
+                { poll['new_poll?'] ? 'New poll' : 'New option' } | by {poll.owner}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -128,6 +132,11 @@ class PollCard extends React.Component
                   <ListItemSecondaryAction>
                     <Switch disabled={!(status === constants.POLL.NORMAL)}/>
                   </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem dense button>
+                  <Grid container alignItems="center" justify="center">
+                    <CircularProgress color="secondary" />
+                  </Grid>
                 </ListItem>
               </List>
             </Grid>

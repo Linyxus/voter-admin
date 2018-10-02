@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import PollCard from '../components/PollCard';
 import { compose } from 'recompose';
 import { CircularProgress } from '@material-ui/core';
-import { fetchList } from '../action';
+import { fetchList, fetchPoll } from '../action';
 
 const styles = {
 
@@ -22,7 +22,7 @@ class ValidationView extends React.Component {
   }
 
   render() {
-    const { classes, pollsList } = this.props;
+    const { pollsList } = this.props;
 
     if (pollsList.status === constants.COMMON.INVALID
       || pollsList.status === constants.COMMON.FETCHING) {
@@ -37,7 +37,12 @@ class ValidationView extends React.Component {
     return (
       <Grid container alignItems="center" justify="center" direction="column">
         {
-          pollsList.list.map(idx => (<PollCard key={idx} poll={this.props.polls[idx]}/>))
+          pollsList.list.map(idx => (
+          <PollCard 
+            key={idx} 
+            poll={this.props.polls[idx]}
+            fetchPoll={() => this.props.fetchPoll(idx)} />
+          ))
         }
       </Grid>
     );
@@ -62,6 +67,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchList: () => dispatch(fetchList()),
+  fetchPoll: (id) => dispatch(fetchPoll(id)),
 });
 
 export default compose(withStyles(styles), 

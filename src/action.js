@@ -1,5 +1,5 @@
-import { http, authedGet } from "./requests";
-import { saveCreds, clearCreds } from "./tools";
+import { http, authedGet } from './requests';
+import { saveCreds, clearCreds } from './tools';
 
 export const SET_PAGE = 'SET_PAGE';
 export const setPage = (page) => ({
@@ -95,4 +95,66 @@ export const logout = () => ({
 export const doLogout = () => dispatch => {
   clearCreds();
   dispatch(logout());
+}
+
+export const FETCH_POLL_REQUEST = 'FETCH_POLL_REQUEST';
+export const fetchPollRequest = (id) => ({
+  type: FETCH_POLL_REQUEST,
+  id,
+});
+
+export const FETCH_POLL_SUCCEED = 'FETCH_POLL_SUCCEED';
+export const fetchPollSucceed = (poll) => ({ // poll id is included in {poll}
+  type: FETCH_POLL_SUCCEED,
+  poll,
+});
+
+export const FETCH_POLL_FAIL = 'FETCH_POLL_FAIL';
+export const fetchPollFail = (id, error) => ({
+  type: FETCH_POLL_FAIL,
+  id, error,
+});
+
+export const fetchPoll = (id) => dispatch => {
+  dispatch(fetchPollRequest(id));
+  http.get(`/polls/${id}/`)
+    .then(
+      resp => {
+        dispatch(fetchPollSucceed(resp.data));
+      },
+      error => {
+        dispatch(fetchPollFail(error.response || error.request));
+      }
+    )
+}
+
+export const FETCH_OPTION_REQUEST = 'FETCH_OPTION_REQUEST';
+export const fetchOptionRequest = (id) => ({
+  type: FETCH_OPTION_REQUEST,
+  id,
+});
+
+export const FETCH_OPTION_SUCCEED = 'FETCH_OPTION_SUCCEED';
+export const fetchOptionSucceed = (option) => ({ // option id is included in {poll}
+  type: FETCH_OPTION_SUCCEED,
+  option,
+});
+
+export const FETCH_OPTION_FAIL = 'FETCH_OPTION_FAIL';
+export const fetchOptionFail = (id, error) => ({
+  type: FETCH_OPTION_FAIL,
+  id, error,
+});
+
+export const fetchOption = (id) => dispatch => {
+  dispatch(fetchOptionRequest(id));
+  http.get(`/options/${id}/`)
+    .then(
+      resp => {
+        dispatch(fetchOptionSucceed(resp.data));
+      },
+      error => {
+        dispatch(fetchOptionFail(error.response || error.request));
+      }
+    )
 }
