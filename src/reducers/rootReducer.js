@@ -4,11 +4,12 @@ import auth from './auth';
 import pollsList from './pollsList';
 import polls from './polls';
 import options from './options';
+import validation from './validation';
 
 const rootReducer = combineReducers(
   {
     auth, page, pollsList,
-    polls, options, 
+    polls, options, validation,
   }
 );
 

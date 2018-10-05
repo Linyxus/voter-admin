@@ -156,5 +156,17 @@ export const fetchOption = (id) => dispatch => {
       error => {
         dispatch(fetchOptionFail(error.response || error.request));
       }
-    )
-}
+    );
+};
+
+export const TOGGLE_POLL = 'TOGGLE_POLL';
+export const togglePoll = (id) => ({
+  type: TOGGLE_POLL,
+  id,
+});
+
+export const TOGGLE_OPTION = 'TOGGLE_OPTION';
+export const toggleOption = (pollId, optionId) => ({
+  type: TOGGLE_OPTION,
+  pollId, optionId,
+})

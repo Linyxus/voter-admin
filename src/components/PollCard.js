@@ -1,19 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { Grid, Button, CircularProgress } from '@material-ui/core';
-import Switch from '@material-ui/core/Switch';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import constants from '../constants';
-import CheckIcon from '@material-ui/icons/Check';
-import OptionItem from './OptionItem';
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import { Grid, Button, CircularProgress } from "@material-ui/core";
+import Switch from "@material-ui/core/Switch";
+import List from "@material-ui/core/List";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import constants from "../constants";
+import CheckIcon from "@material-ui/icons/Check";
+import OptionItem from "./OptionItem";
 
 const styles = theme => ({
   root: {
@@ -21,13 +17,13 @@ const styles = theme => ({
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
     maxWidth: 600,
-    marginBottom: 10,
+    marginBottom: 10
   },
   loading: {
     marginBottom: 10,
     height: 300,
     width: "100%",
-    maxWidth: 600,
+    maxWidth: 600
   },
   paper: {
     height: "100%"
@@ -40,8 +36,7 @@ const styles = theme => ({
   }
 });
 
-class PollCard extends React.Component
-{
+class PollCard extends React.Component {
   componentDidMount() {
     // TODO: if the poll is not valid, load the poll data from server
     const { poll } = this.props;
@@ -55,18 +50,29 @@ class PollCard extends React.Component
     // calculate the status
     const status = poll === undefined ? constants.POLL.INVALID : poll.status;
 
-    if (status === constants.POLL.FETCHING || status === constants.POLL.INVALID || status === constants.POLL.VALIDATING) {
+    if (
+      status === constants.POLL.FETCHING ||
+      status === constants.POLL.INVALID ||
+      status === constants.POLL.VALIDATING
+    ) {
       return (
         <div className={classes.loading}>
           <Paper className={classes.paper}>
-            <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
+            <Grid
+              className={classes.paper}
+              direction="column"
+              container
+              justify="center"
+              alignItems="center"
+            >
               <Grid item>
-                <CircularProgress/>
+                <CircularProgress />
               </Grid>
               <Grid item>
                 <Typography variant="caption">
-                  {status === constants.POLL.VALIDATING ? 
-                    'Submitting...' : 'Loading...' }
+                  {status === constants.POLL.VALIDATING
+                    ? "Submitting..."
+                    : "Loading..."}
                 </Typography>
               </Grid>
             </Grid>
@@ -79,7 +85,13 @@ class PollCard extends React.Component
       return (
         <div className={classes.loading}>
           <Paper className={classes.paper}>
-            <Grid className={classes.paper} direction="column" container justify="center" alignItems="center">
+            <Grid
+              className={classes.paper}
+              direction="column"
+              container
+              justify="center"
+              alignItems="center"
+            >
               <Grid item>
                 <CheckIcon color="secondary" />
               </Grid>
@@ -97,50 +109,53 @@ class PollCard extends React.Component
         <Paper className={classes.root} elevation={1}>
           <Grid container spacing={theme.spacing.unit}>
             <Grid item className={classes.grow}>
-              <Typography variant="title">
-                {poll.title}
-              </Typography>
+              <Typography variant="title">{poll.title}</Typography>
             </Grid>
-            <Grid item>
-              <Switch color="primary" disabled={!(status === constants.POLL.NORMAL)}/>
-            </Grid>
+            {poll["new_poll?"] && (
+              <Grid item>
+                <Switch
+                  color="primary"
+                  checked={this.props.validation.validated}
+                  disabled={!(status === constants.POLL.NORMAL)}
+                  onChange={(e, c) => this.props.toggle()}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Typography variant="caption">
-                { poll['new_poll?'] ? 'New poll' : 'New option' } | by {poll.owner}
+                {poll["new_poll?"] ? "New poll" : "New option"} | by{" "}
+                {poll.owner}
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography component="p">
-                Check or uncheck the switches to determine whether the whole poll of the single
-                option is valid. Click commit to apply the validation.
+                Check or uncheck the switches to determine whether the whole
+                poll of the single option is valid. Click commit to apply the
+                validation.
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="caption">
-                Options
-              </Typography>
+              <Typography variant="caption">Options</Typography>
             </Grid>
             <Grid item xs={12}>
               <List>
-                {
-                  poll.options.map(id => {
-                    return (
-                      <OptionItem
-                        key={id}
-                        option={this.props.options[id]}
-                        fetchOption={() => this.props.fetchOption(id)} />
-                    );
-                  })
-                }
+                {poll.options.map(id => {
+                  return (
+                    <OptionItem
+                      key={id}
+                      option={this.props.options[id]}
+                      fetchOption={() => this.props.fetchOption(id)}
+                      toggle={() => this.props.toggleOption(poll.id, id)}
+                      parentChecked={this.props.validation.validated}
+                      checked={this.props.validation.options[id] && this.props.validation.validated}
+                    />
+                  );
+                })}
               </List>
             </Grid>
             <Grid item xs={12}>
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                fullWidth
-              >
-                <CloudUploadIcon className={classes.icon}/>
+              <Button variant="outlined" color="primary" fullWidth>
+                <CloudUploadIcon className={classes.icon} />
                 Submit
               </Button>
             </Grid>
@@ -160,10 +175,18 @@ PollCard.propTypes = {
     title: PropTypes.string,
     votes: PropTypes.arrayOf(PropTypes.number),
     created: PropTypes.string,
-    description: PropTypes.string,
+    description: PropTypes.string
   }).isRequired,
   options: PropTypes.object.isRequired,
   fetchOption: PropTypes.func.isRequired,
+  fetchPoll: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired,
+  validation: PropTypes.shape({
+    validated: PropTypes.bool.isRequired,
+    options: PropTypes.object.isRequired
+  }),
+  toggle: PropTypes.func.isRequired,
+  toggleOption: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles, {withTheme: true})(PollCard);
+export default withStyles(styles, { withTheme: true })(PollCard);
