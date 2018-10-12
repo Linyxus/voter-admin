@@ -1,5 +1,6 @@
-import { FETCH_LIST_SUCCEED, FETCH_POLL_REQUEST, FETCH_POLL_FAIL, FETCH_POLL_SUCCEED } from "../action";
+import { FETCH_LIST_SUCCEED, FETCH_POLL_REQUEST, FETCH_POLL_FAIL, FETCH_POLL_SUCCEED, VALIDATE_POLL_REQUEST, VALIDATE_POLL_FAIL, VALIDATE_POLL_SUCCEED } from "../action";
 import constants from "../constants";
+import u from 'updeep';
 
 const polls = (state = {}, action) => {
   let polls = {};
@@ -29,6 +30,24 @@ const polls = (state = {}, action) => {
     poll['new_poll?'] = !action.poll.validated;
     poll = Object.assign({}, poll, action.poll);
     return Object.assign({}, state, {[action.poll.id]: poll});
+  case VALIDATE_POLL_REQUEST:
+    return u({
+      [action.pollId]: {
+        status: constants.POLL.VALIDATING,
+      }
+    }, state);
+  case VALIDATE_POLL_FAIL:
+    return u({
+      [action.pollId]: {
+        status: constants.POLL.VALIDATING,
+      }
+    }, state);
+  case VALIDATE_POLL_SUCCEED:
+    return u({
+      [action.pollId]: {
+        status: constants.POLL.FINISHED,
+      }
+    }, state);
   default:
     return state;
   }

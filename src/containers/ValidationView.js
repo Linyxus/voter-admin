@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import PollCard from '../components/PollCard';
 import { compose } from 'recompose';
 import { CircularProgress } from '@material-ui/core';
-import { fetchList, fetchPoll, fetchOption, togglePoll, toggleOption } from '../action';
+import { fetchList, fetchPoll, fetchOption, togglePoll, toggleOption, validatePoll } from '../action';
 
 const styles = {
 
@@ -46,7 +46,8 @@ class ValidationView extends React.Component {
               fetchOption={this.props.fetchOption}
               validation={this.props.validation[idx]}
               toggle={() => this.props.togglePoll(idx)}
-              toggleOption={this.props.toggleOption} />
+              toggleOption={this.props.toggleOption}
+              validate={() => this.props.validatePoll(idx, this.props.validation[idx])} />
           ))
         }
       </Grid>
@@ -69,6 +70,7 @@ ValidationView.propTypes = {
   options: PropTypes.object.isRequired,
   togglePoll: PropTypes.func.isRequired,
   toggleOption: PropTypes.func.isRequired,
+  validatePoll: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -84,6 +86,7 @@ const mapDispatchToProps = dispatch => ({
   fetchOption: (id) => dispatch(fetchOption(id)),
   togglePoll: (id) => dispatch(togglePoll(id)),
   toggleOption: (pollId, optionId) => dispatch(toggleOption(pollId, optionId)),
+  validatePoll: (pollId, data) => dispatch(validatePoll(pollId, data)),
 });
 
 export default compose(withStyles(styles), 

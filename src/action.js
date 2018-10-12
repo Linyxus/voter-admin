@@ -1,4 +1,4 @@
-import { http, authedGet } from './requests';
+import { http, authedGet, authedPost } from './requests';
 import { saveCreds, clearCreds } from './tools';
 
 export const SET_PAGE = 'SET_PAGE';
@@ -170,3 +170,39 @@ export const toggleOption = (pollId, optionId) => ({
   type: TOGGLE_OPTION,
   pollId, optionId,
 })
+
+export const VALIDATE_POLL_REQUEST = 'VALIDATE_POLL_REQUEST';
+export const validatePollRequest = (pollId) => ({
+  type: VALIDATE_POLL_REQUEST,
+  pollId,
+});
+
+export const VALIDATE_POLL_FAIL = 'VALIDATE_POLL_FAIL';
+export const validatePollFail = (pollId, error) => ({
+  type: VALIDATE_POLL_FAIL,
+  pollId, error,
+});
+
+export const VALIDATE_POLL_SUCCEED = 'VALIDATE_POLL_SUCCEED';
+export const validatePollSucceed = (pollId) => ({
+  type: VALIDATE_POLL_SUCCEED,
+  pollId,
+});
+
+export const validatePoll = (pollId, data) => dispatch => {
+  dispatch(validatePollRequest(pollId));
+  let params = {};
+  params.id = pollId;
+  params.passed = data.validated;
+  params.options = data.options;
+  authedPost('/admin/validation/polls/', params)
+    .then(
+      resp => {
+        // TODO: fix bugs in the backend
+        dispatch(validatePollSucceed(pollId));
+      },
+      error => {
+        dispatch(validatePollFail(pollId, error.response || error.request));
+      }
+    );
+};

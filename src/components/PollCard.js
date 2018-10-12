@@ -154,7 +154,7 @@ class PollCard extends React.Component {
               </List>
             </Grid>
             <Grid item xs={12}>
-              <Button variant="outlined" color="primary" fullWidth>
+              <Button variant="outlined" color="primary" fullWidth onClick={this.props.validate}>
                 <CloudUploadIcon className={classes.icon} />
                 Submit
               </Button>
@@ -187,6 +187,7 @@ PollCard.propTypes = {
   }),
   toggle: PropTypes.func.isRequired,
   toggleOption: PropTypes.func.isRequired,
+  validate: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(PollCard);
