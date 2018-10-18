@@ -1,6 +1,14 @@
 import { http, authedGet, authedPost } from './requests';
 import { saveCreds, clearCreds } from './tools';
 
+const extractError = (error) => {
+  if (error.response) {
+    return JSON.stringify(error.response.data);
+  } else {
+    return JSON.stringify('Network error.');
+  }
+}
+
 export const SET_PAGE = 'SET_PAGE';
 export const setPage = (page) => ({
   type: SET_PAGE,
@@ -42,17 +50,22 @@ export const loginAsSuperuser = (username, password) => dispatch => {
             resp => {
               if (resp.data['is_superuser?']) {
                 dispatch(authSucceed(username));
+                dispatch(openSnackbar(`Welcome, ${username}.`));
               } else {
                 dispatch(authFail('You are not superuser.'));
+                clearCreds();
+                dispatch(openSnackbar(`Sorry, ${username}. You are not superuser.`));
               }
             },
             error => {
               dispatch(authFail(error.response || error.request));
+              dispatch(openSnackbar(`Login failed: ${extractError(error)}`));
             }
           )
       },
       error => {
         dispatch(authFail(error.response || error.request));
+        dispatch(openSnackbar(`Login failed: ${extractError(error)}`));
       }
     );
 }
@@ -206,3 +219,14 @@ export const validatePoll = (pollId, data) => dispatch => {
       }
     );
 };
+
+export const OPEN_SNACKBAR = 'TOAST';
+export const openSnackbar = (text, duration = 6000) => ({
+  type: OPEN_SNACKBAR,
+  text, duration,
+});
+
+export const CLOSE_SNACKBAR = 'CLOSE_SNACKBAR';
+export const closeSnackbar = () => ({
+  type: CLOSE_SNACKBAR,
+});

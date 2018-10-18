@@ -7,6 +7,7 @@ import constants from './constants';
 import AuthView from './containers/AuthView';
 import { loginAsSuperuser, doLogout, authSucceed } from './action';
 import { isExpired } from './tools';
+import MySnackBar from './components/MySnackBar';
 
 class App extends Component {
   componentDidMount() {
@@ -25,6 +26,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <CssBaseline />
+        <MySnackBar />
         { this.props.auth.status === constants.AUTH.AUTHED ? (
           <MyAppBar 
             content={<Root />}/>
